@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-blockphysics-mod",
+  "version": "${version}",
+  "name": "BlockPhysics",
+  "description": "Physics for blocks!",
+  "authors": [
+    {
+      "name": "Mitchell Skaggs",
+      "contact": {
+        "email": "skaggsm333@gmail.com"
+      }
+    }
+  ],
+  "contact": {
+    "homepage": "https://github.com/magneticflux-/fabric-blockphysics-mod",
+    "issues": "https://github.com/magneticflux-/fabric-blockphysics-mod/issues",
+    "sources": "https://github.com/magneticflux-/fabric-blockphysics-mod"
+  },
+  "license": "LGPL-3.0-or-later",
+  "icon": "assets/fabric-blockphysics-mod/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      {
+        "adapter": "kotlin",
+        "value": "com.skaggsm.blockphysicsmod.BlockPhysicsMod"
+      }
+    ],
+    "modmenu": [
+      "com.skaggsm.blockphysicsmod.config.BlockPhysicsModMenu"
+    ]
+  },
+  "mixins": [
+    "fabric-blockphysics-mod.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.7.0",
+    "fabric": "*",
+    "fabric-language-kotlin": ">=1.3.30"
+  },
+  "custom": {
+    "modmenu:clientsideOnly": false
+  }
+}

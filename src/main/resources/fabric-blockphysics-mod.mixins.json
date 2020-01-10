@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "com.skaggsm.blockphysicsmod.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinBlockAdded",
+    "MixinBlockRemoved",
+    "MixinFallingBlockEntity"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

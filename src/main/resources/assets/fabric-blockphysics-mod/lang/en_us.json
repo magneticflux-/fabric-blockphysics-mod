@@ -1,0 +1,4 @@
+{
+  "text.autoconfig.fabric-blockphysics-mod.title": "Block Physics Config",
+  "text.autoconfig.fabric-blockphysics-mod.option.physicsLimitPerTick": "Number of physics calculations per tick."
+}
