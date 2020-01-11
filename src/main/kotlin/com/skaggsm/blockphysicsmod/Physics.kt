@@ -86,7 +86,7 @@ fun fall(world: World, pos: BlockPos, fallVector: Vec3i) {
         e.setPosition(e.x + fallVector.x, e.y + fallVector.y, e.z + fallVector.z)
         world.spawnEntity(e)
     } else {
-        schedulePhysics(world, pos)
+        schedulePhysicsLater(world, pos) // Needs to be later to avoid looping the check up to the physics limit
     }
 }
 
@@ -139,18 +139,17 @@ fun findFallVector(world: World, pos: BlockPos): Vec3i? {
     }
 }
 
-fun schedulePhysics(world: World, pos: BlockPos) {
-    if (!physicsQueue.offer(PhysicsEvent(world, pos)))
-        tryFall(world, pos)
-}
+fun schedulePhysicsNow(world: World, pos: BlockPos) = addToPhysicsQueue(PhysicsEvent(world, pos))
+
+fun schedulePhysicsLater(world: World, pos: BlockPos) = addToPhysicsQueueBuffer(PhysicsEvent(world, pos))
 
 @Suppress("UNUSED_PARAMETER")
 fun onBlockAdded(state: BlockState, world: World, pos: BlockPos, oldState: BlockState, moved: Boolean, ci: CallbackInfo) {
-    schedulePhysics(world, pos)
-    allExtendedNeighbors.forEach { schedulePhysics(world, pos.add(it)) }
+    schedulePhysicsNow(world, pos)
+    allExtendedNeighbors.forEach { schedulePhysicsNow(world, pos.add(it)) }
 }
 
 @Suppress("UNUSED_PARAMETER")
 fun onBlockRemoved(state: BlockState, world: World, pos: BlockPos, newState: BlockState, moved: Boolean, ci: CallbackInfo) {
-    allExtendedNeighbors.forEach { schedulePhysics(world, pos.add(it)) }
+    allExtendedNeighbors.forEach { schedulePhysicsNow(world, pos.add(it)) }
 }

@@ -16,10 +16,12 @@ object BlockPhysicsMod : ModInitializer {
     const val MODID: String = "fabric-blockphysics-mod"
 
     val log: Logger = LogManager.getLogger(MODID)
-    lateinit var config: ConfigHolder<BlockPhysicsConfig>
+    private lateinit var config_: ConfigHolder<BlockPhysicsConfig>
+    val config: BlockPhysicsConfig
+        get() = config_.config
 
     override fun onInitialize() {
-        config = AutoConfig.register(BlockPhysicsConfig::class.java, ::Toml4jConfigSerializer)
+        config_ = AutoConfig.register(BlockPhysicsConfig::class.java, ::Toml4jConfigSerializer)
 
         ServerTickCallback.EVENT.register(ServerTickCallback { processPhysicsQueue(it) })
     }

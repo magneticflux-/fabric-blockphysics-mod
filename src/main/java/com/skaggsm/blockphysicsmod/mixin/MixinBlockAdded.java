@@ -1,6 +1,5 @@
 package com.skaggsm.blockphysicsmod.mixin;
 
-import com.skaggsm.blockphysicsmod.PhysicsKt;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FallingBlock;
@@ -12,6 +11,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import static com.skaggsm.blockphysicsmod.PhysicsKt.onBlockAdded;
+
 /**
  * Created by Mitchell Skaggs on 5/22/2019.
  */
@@ -19,6 +20,6 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public class MixinBlockAdded {
     @Inject(method = "onBlockAdded", at = @At("HEAD"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
     public void inOnBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean moved, CallbackInfo ci) {
-        PhysicsKt.onBlockAdded(state, world, pos, oldState, moved, ci);
+        onBlockAdded(state, world, pos, oldState, moved, ci);
     }
 }

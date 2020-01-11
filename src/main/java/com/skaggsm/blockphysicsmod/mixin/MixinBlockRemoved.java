@@ -1,6 +1,5 @@
 package com.skaggsm.blockphysicsmod.mixin;
 
-import com.skaggsm.blockphysicsmod.PhysicsKt;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
@@ -11,6 +10,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import static com.skaggsm.blockphysicsmod.PhysicsKt.onBlockRemoved;
+
 /**
  * Created by Mitchell Skaggs on 5/22/2019.
  */
@@ -18,6 +19,6 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public class MixinBlockRemoved {
     @Inject(method = "onBlockRemoved", at = @At("HEAD"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
     public void inOnBlockAdded(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved, CallbackInfo ci) {
-        PhysicsKt.onBlockRemoved(state, world, pos, newState, moved, ci);
+        onBlockRemoved(state, world, pos, newState, moved, ci);
     }
 }

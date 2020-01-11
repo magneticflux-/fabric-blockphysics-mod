@@ -17,7 +17,7 @@ configurations {
 
 repositories {
     maven {
-        url = 'http://maven.fabricmc.net/'
+        url = 'https://maven.fabricmc.net/'
         name = 'Fabric'
     }
     maven { url = 'https://dl.bintray.com/magneticflux/maven' }
@@ -26,6 +26,7 @@ repositories {
         name = 'CurseForge'
     }
     maven { url = 'https://dl.bintray.com/shedaniel/autoconfig1u/' }
+    maven { url = 'https://masa.dy.fi/maven/' }
     jcenter()
 }
 
@@ -60,6 +61,8 @@ dependencies {
 
     modImplementation 'me.sargunvohra.mcmods:autoconfig1u:1.2.4'
     include 'me.sargunvohra.mcmods:autoconfig1u:1.2.4'
+
+    modImplementation 'carpet:fabric-carpet:1.15.1-1.3.3+v200105'
 }
 
 processResources {
