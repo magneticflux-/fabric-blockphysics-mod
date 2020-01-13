@@ -6,14 +6,13 @@ import net.minecraft.block.Material
 import net.minecraft.entity.FallingBlockEntity
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
-import net.minecraft.util.math.Direction.*
+import net.minecraft.util.math.Direction.UP
 import net.minecraft.util.math.Vec3i
 import net.minecraft.world.EntityView
 import net.minecraft.world.World
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
 import kotlin.streams.toList
 
-val directions = listOf(NORTH, SOUTH, EAST, WEST)
 val allExtendedNeighbors = listOf(
         Vec3i(-1, -1, -1),
         Vec3i(-1, -1, 0),
@@ -43,8 +42,6 @@ val allExtendedNeighbors = listOf(
         Vec3i(1, 1, 0),
         Vec3i(1, 1, 1)
 )
-val noCornersExtendedNeighbors = allExtendedNeighbors.filter { it.getManhattanDistance(Vec3i.ZERO) <= 2 }
-val touchingNeighbors = noCornersExtendedNeighbors.filter { it.getManhattanDistance(Vec3i.ZERO) <= 1 }
 
 val dirtSupport = listOf(
         Vec3i(-1, -1, -1),
@@ -61,6 +58,26 @@ val sandSupport = listOf(
         Vec3i(0, -1, -1),
         Vec3i(0, -1, 1),
         Vec3i(1, -1, 0)
+)
+val stoneSupport = listOf(
+        Vec3i(-1, -1, -1),
+        Vec3i(-1, -1, 0),
+        Vec3i(-1, -1, 1),
+        Vec3i(-1, 0, -1),
+        Vec3i(-1, 0, 0),
+        Vec3i(-1, 0, 1),
+        Vec3i(0, -1, -1),
+        Vec3i(0, -1, 0),
+        Vec3i(0, -1, 1),
+        Vec3i(0, 0, -1),
+        // Vec3i(0, 0, 0), // Origin
+        Vec3i(0, 0, 1),
+        Vec3i(1, -1, -1),
+        Vec3i(1, -1, 0),
+        Vec3i(1, -1, 1),
+        Vec3i(1, 0, -1),
+        Vec3i(1, 0, 0),
+        Vec3i(1, 0, 1)
 )
 
 /**
@@ -127,8 +144,8 @@ fun findFallVector(world: World, pos: BlockPos): Vec3i? {
         Material.STONE // Stone, ores, bricks
         -> {
             if (canFallThrough(belowState)) {
-                val supports = directions.count {
-                    !canFallThrough(world.getBlockState(below.offset(it)))
+                val supports = stoneSupport.count {
+                    !canFallThrough(world.getBlockState(pos.add(it)))
                 }
                 if (supports < 1)
                     Vec3i.ZERO
