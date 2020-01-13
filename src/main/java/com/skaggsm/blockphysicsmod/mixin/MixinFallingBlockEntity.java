@@ -7,6 +7,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.FallingBlockEntity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemConvertible;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -153,6 +154,22 @@ public abstract class MixinFallingBlockEntity extends Entity {
         if (this.delayedRemove)
             this.remove();
         this.delayedRemove = false;
+    }
+
+    /**
+     * This fixes a Mojang bug in which falling sand wouldn't break sea grass because it thinks the falling blocks are the same type (air), so a replacement wouldn't do anything. This makes it see that the type is actually sand.
+     */
+    @Redirect(
+            method = "tick",
+            at = @At(
+                    value = "FIELD",
+                    target = "Lnet/minecraft/item/ItemStack;EMPTY:Lnet/minecraft/item/ItemStack;",
+                    ordinal = 0
+            )
+    )
+    public ItemStack useFallingBlockItemStack() {
+        FallingBlockEntity this_ = (FallingBlockEntity) (Object) this;
+        return new ItemStack(this_.getBlockState().getBlock());
     }
 }
 
