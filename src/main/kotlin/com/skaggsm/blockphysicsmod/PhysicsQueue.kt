@@ -7,16 +7,25 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
 import java.util.*
 
+val BlockPosComparator = compareBy(BlockPos::getY, BlockPos::getX, BlockPos::getZ)
+
 data class PhysicsEvent(val world: World, val pos: BlockPos) : Comparable<PhysicsEvent> {
-    override fun compareTo(other: PhysicsEvent): Int = this.pos.y.compareTo(other.pos.y)
+    val isAir: Boolean
+        get() = world.isAir(pos)
+
+    override fun compareTo(other: PhysicsEvent): Int = BlockPosComparator.compare(this.pos, other.pos)
 }
 
 fun addToPhysicsQueue(event: PhysicsEvent) {
-    physicsQueue.add(event)
+    // Early check for useless physics event
+    if (!event.isAir)
+        physicsQueue.add(event)
 }
 
 fun addToPhysicsQueueBuffer(event: PhysicsEvent) {
-    physicsQueueBuffer.add(event)
+    // Early check for useless physics event
+    if (!event.isAir)
+        physicsQueueBuffer.add(event)
 }
 
 private val physicsQueueBuffer = ArrayDeque<PhysicsEvent>(config.physicsLimitPerTick)
@@ -30,15 +39,12 @@ fun processPhysicsQueue(server: MinecraftServer) {
     while (i < limit) {
         val event = physicsQueue.poll() ?: break
         if (tryFall(event.world, event.pos)) {
-            log.trace("Block fell (was ${event.world.getBlockState(event.pos)})")
             i++
-        } else {
-            log.trace("Block did NOT fall (was ${event.world.getBlockState(event.pos)})")
         }
     }
 
     if (i >= limit)
-        log.debug("Hit physics limit ($limit) this tick with $i falls. Deferred ${physicsQueue.size} to next tick.")
+        log.info("Hit physics limit ($limit) this tick with $i falls. Deferred ${physicsQueue.size} to next tick.")
     else
         log.debug("Under physics limit ($limit) this tick with $i falls. Deferred ${physicsQueue.size} to next tick.")
 
